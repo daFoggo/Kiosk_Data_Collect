@@ -58,7 +58,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     className, 
     variant, 
     size, 
-    iconPosition,
+    iconPosition = "left",
     iconGap,
     asChild = false, 
     leftIcon,
@@ -68,7 +68,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }, ref) => {
     const Comp = asChild ? Slot : "button"
     const hasIcon = Boolean(leftIcon || rightIcon)
-    const iconToRender = iconPosition === "left" ? leftIcon || rightIcon : rightIcon || leftIcon
 
     return (
       <Comp
@@ -85,7 +84,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {iconToRender}
+        {iconPosition === "left" && leftIcon}
+        {iconPosition === "left" && rightIcon}
+        {iconPosition === "right" && rightIcon}
+        {iconPosition === "right" && leftIcon}
         {children}
       </Comp>
     )

@@ -6,6 +6,7 @@ export default {
   	extend: {
       fontFamily: {
         clash: ["ClashDisplay", "sans-serif"],
+		inter: ["Inter", "sans-serif"],
       },
   		borderRadius: {
   			lg: 'var(--radius)',

@@ -20,7 +20,7 @@ const MobileNav = () => {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent side="left" onOpenAutoFocus={(e) => e.preventDefault()}>
         <SheetTitle>
           <Logo />
         </SheetTitle>

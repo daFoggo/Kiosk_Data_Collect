@@ -13,7 +13,7 @@ const RootLayout = () => {
         </main>
         <Footer />
       </div>
-      <Toaster />
+      <Toaster position="top-center" />
     </>
   );
 };
