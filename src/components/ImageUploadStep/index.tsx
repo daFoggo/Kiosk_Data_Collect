@@ -29,7 +29,12 @@ export const ImageUploadStep = ({
   <div className="space-y-4">
     <DialogHeader>
       <DialogTitle>Tải lên 1 - 3 hình ảnh chân dung</DialogTitle>
-      <DialogDescription>{/* Image upload instructions */}</DialogDescription>
+        <ul className="text-sm text-muted-foreground list-disc ml-4 text-left">
+          <li>Tải lên ảnh của <b>BẠN</b> :) </li>
+          <li>Chụp 3 ảnh : Hơi hướng mặt về <b>bên trái</b>, <b>Chính diện</b>, Hơi hướng mặt về <b>bên phải</b></li>
+          <li>Đảm bảo ảnh của bạn có độ sáng tối, không mờ nhòe</li>
+          <li>Thông tin của bạn chỉ được dùng duy nhất cho mục đích nhận diện của trợ lý ảo</li>
+        </ul>
     </DialogHeader>
 
     <FormField
@@ -74,7 +79,7 @@ export const ImageUploadStep = ({
               <div className="flex flex-col items-center">
                 <Upload className="h-12 w-12 text-muted-foreground" />
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Kéo và thả hoặc nhấp để chọn hình ảnh
+                  Kéo và thả hoặc nhấp để chọn một hay nhiều hình ảnh
                 </p>
               </div>
             )}

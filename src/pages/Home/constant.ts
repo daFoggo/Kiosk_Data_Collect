@@ -28,6 +28,7 @@ export const formSchema = z.object({
     required_error: "Vui lòng chọn vai trò",
   }),
   department: z.string().optional(),
+  person_code: z.string().optional(),
   dobDay: z.string().min(1, { message: "Chọn ngày" }),
   dobMonth: z.string().min(1, { message: "Chọn tháng" }),
   dobYear: z.string().min(1, { message: "Chọn năm" }),

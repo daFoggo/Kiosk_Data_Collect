@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -34,15 +34,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { updateIdentifyDataIp } from "@/utils/ip";
-import { CLASSES, DEPARTMENTS, formSchema } from "./constant";
-import { IFormData } from "@/models/ImageUpload/type";
+import { getDepartmentIp, updateIdentifyDataIp } from "@/utils/ip";
+import { CLASSES, formSchema } from "./constant";
+import { IClass, IDepartment, IFormData } from "@/models/ImageUpload/type";
 import { ImageUploadStep } from "@/components/ImageUploadStep";
 
 const Home = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [classData, setClassData] = useState<IClass[]>([]);
+  const [departmentData, setDepartmentData] = useState<IDepartment[]>([]);
   const navigate = useNavigate();
 
   const form = useForm<IFormData>({
@@ -52,6 +54,7 @@ const Home = () => {
       identity_code: "",
       role: undefined,
       department: "",
+      person_code: "",
       dobDay: "",
       dobMonth: "",
       dobYear: "",
@@ -59,6 +62,18 @@ const Home = () => {
       images: [],
     },
   });
+
+  const handleGetClassData = async () => {
+  }
+
+  const handleGetDepartmentData = async () => {
+    try {
+      const response = await axios.get(getDepartmentIp)
+      setDepartmentData(response.data.payload)
+    } catch (error) {
+      console.error("Error fetching department data:", error)
+    }
+  }
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -126,8 +141,9 @@ const Home = () => {
           Gender: data.gender,
         },
         role: data.role,
-        ...(data.role === "officer" && data.department
-          ? { department: data.department }
+        ...((data.role === "officer" || data.role === "student") &&
+        data.department
+          ? { department: data.department, person_code: data.person_code }
           : {}),
       };
 
@@ -308,12 +324,12 @@ const Home = () => {
                                   </FormControl>
                                   <SelectContent>
                                     {form.watch("role") === "officer"
-                                      ? DEPARTMENTS.map((dept) => (
+                                      ? departmentData.map((dept) => (
                                           <SelectItem
-                                            key={dept.value}
-                                            value={dept.value}
+                                            key={dept.ma_phong_ban}
+                                            value={dept.ma_phong_ban}
                                           >
-                                            {dept.label}
+                                            {dept.ten_phong_ban}
                                           </SelectItem>
                                         ))
                                       : CLASSES.map((cls) => (
@@ -326,6 +342,34 @@ const Home = () => {
                                         ))}
                                   </SelectContent>
                                 </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
+
+                        {(form.watch("role") === "officer" ||
+                          form.watch("role") === "student") && (
+                          <FormField
+                            control={form.control}
+                            name="person_code"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>
+                                  {form.watch("role") === "officer"
+                                    ? "Mã cán bộ"
+                                    : "Mã sinh viên"}
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    placeholder={
+                                      form.watch("role") === "officer"
+                                        ? "Nhập mã cán bộ"
+                                        : "Nhập mã sinh viên"
+                                    }
+                                    {...field}
+                                  />
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
