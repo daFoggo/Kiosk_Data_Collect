@@ -7,7 +7,6 @@ export interface IDepartment {
 }
 
 export interface IClass {
-    id: number;
-    ma_lop: string;
-    ten_lop: string;
+    id: string;
+    ten_lop_hanh_chinh: string;
 }

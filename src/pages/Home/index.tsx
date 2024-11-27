@@ -34,8 +34,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { getDepartmentIp, updateIdentifyDataIp } from "@/utils/ip";
-import { CLASSES, formSchema } from "./constant";
+import { getClassIp, getDepartmentIp, updateIdentifyDataIp } from "@/utils/ip";
+import { formSchema } from "./constant";
 import { IClass, IDepartment, IFormData } from "@/models/ImageUpload/type";
 import { ImageUploadStep } from "@/components/ImageUploadStep";
 
@@ -43,14 +43,14 @@ const Home = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  // const [classData, setClassData] = useState<IClass[]>([]);
+  const [classData, setClassData] = useState<IClass[]>([]);
   const [departmentData, setDepartmentData] = useState<IDepartment[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     handleGetDepartmentData();
     handleGetClassData();
-  }, [])
+  }, []);
 
   const form = useForm<IFormData>({
     resolver: zodResolver(formSchema),
@@ -58,8 +58,8 @@ const Home = () => {
       name: "",
       identity_code: "",
       role: undefined,
-      department: "",
-      person_code: "",
+      department_code: "",
+      personal_code: "",
       dobDay: "",
       dobMonth: "",
       dobYear: "",
@@ -68,17 +68,23 @@ const Home = () => {
     },
   });
 
-  const handleGetClassData = async () => {
-  }
-
   const handleGetDepartmentData = async () => {
     try {
-      const response = await axios.get(getDepartmentIp)
-      setDepartmentData(response.data.payload)
+      const response = await axios.get(getDepartmentIp);
+      setDepartmentData(response.data.payload);
     } catch (error) {
-      console.error("Error fetching department data:", error)
+      console.error("Error fetching department data:", error);
     }
-  }
+  };
+
+  const handleGetClassData = async () => {
+    try {
+      const response = await axios.get(getClassIp);
+      setClassData(response.data.payload);
+    } catch (error) {
+      console.log("Error fetching class data:", error);
+    }
+  };
 
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -147,8 +153,11 @@ const Home = () => {
         },
         role: data.role,
         ...((data.role === "officer" || data.role === "student") &&
-        data.department
-          ? { department: data.department, person_code: data.person_code }
+        data.department_code
+          ? {
+              department_code: data.department_code,
+              personal_code: data.personal_code,
+            }
           : {}),
       };
 
@@ -196,7 +205,7 @@ const Home = () => {
           </motion.div>
         ) : (
           <div className="flex flex-col gap-4 items-center">
-            <h1 className="text-2xl sm:text-6xl text-center font-semibold">
+            <h1 className="text-3xl sm:text-6xl text-center font-semibold">
               Tải lên dữ liệu nhận diện của bạn
             </h1>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -299,65 +308,79 @@ const Home = () => {
                           )}
                         />
 
-                        {/* Conditional Department/Class Field */}
-                        {(form.watch("role") === "officer" ||
-                          form.watch("role") === "student") && (
-                          <FormField
-                            control={form.control}
-                            name="department"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>
+                        <FormField
+                          control={form.control}
+                          name="department_code"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                {form.watch("role") === "officer"
+                                  ? "Phòng ban"
+                                  : "Lớp"}
+                              </FormLabel>
+                              <Select
+                                key={`dept-select-${field.value || "default"}`}
+                                onValueChange={(value) => {
+                                  if (value) {
+                                    field.onChange(value);
+                                  }
+                                }}
+                                value={field.value || undefined}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue
+                                      placeholder={
+                                        form.watch("role") === "officer"
+                                          ? "Chọn phòng ban"
+                                          : "Chọn lớp"
+                                      }
+                                    >
+                                      {form.watch("role") === "officer"
+                                        ? departmentData?.find(
+                                            (dept) =>
+                                              dept.ma_phong_ban.toString() ===
+                                              form.watch("department_code")
+                                          )?.ten_phong_ban || "Chọn phòng ban"
+                                        : classData?.find(
+                                            (cls) =>
+                                              cls.id.toString() ===
+                                              form.watch("department_code")
+                                          )?.ten_lop_hanh_chinh || "Chọn lớp"}
+                                    </SelectValue>
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
                                   {form.watch("role") === "officer"
-                                    ? "Phòng ban"
-                                    : "Lớp"}
-                                </FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue
-                                        placeholder={
-                                          form.watch("role") === "officer"
-                                            ? "Chọn phòng ban"
-                                            : "Chọn lớp"
-                                        }
-                                      />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {form.watch("role") === "officer"
-                                      ? departmentData.map((dept) => (
-                                          <SelectItem
-                                            key={dept.ma_phong_ban}
-                                            value={dept.ma_phong_ban}
-                                          >
-                                            {dept.ten_phong_ban}
-                                          </SelectItem>
-                                        ))
-                                      : CLASSES.map((cls) => (
-                                          <SelectItem
-                                            key={cls.value}
-                                            value={cls.value}
-                                          >
-                                            {cls.label}
-                                          </SelectItem>
-                                        ))}
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        )}
+                                    ? departmentData?.map((dept) => (
+                                        <SelectItem
+                                          key={dept.ma_phong_ban}
+                                          value={dept.ma_phong_ban.toString()}
+                                        >
+                                          {dept.ten_phong_ban}
+                                        </SelectItem>
+                                      ))
+                                    : classData?.map((cls) => (
+                                        <SelectItem
+                                          key={cls.id}
+                                          value={cls.id.toString()}
+                                        >
+                                          {cls.ten_lop_hanh_chinh}
+                                        </SelectItem>
+                                      ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
                         {(form.watch("role") === "officer" ||
                           form.watch("role") === "student") && (
                           <FormField
                             control={form.control}
-                            name="person_code"
+                            name="personal_code"
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>
