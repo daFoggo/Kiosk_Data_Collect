@@ -43,9 +43,14 @@ const Home = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
-  const [classData, setClassData] = useState<IClass[]>([]);
+  // const [classData, setClassData] = useState<IClass[]>([]);
   const [departmentData, setDepartmentData] = useState<IDepartment[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    handleGetDepartmentData();
+    handleGetClassData();
+  }, [])
 
   const form = useForm<IFormData>({
     resolver: zodResolver(formSchema),
