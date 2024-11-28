@@ -187,7 +187,7 @@ const Home = () => {
             <h1 className="font-bold text-2xl sm:text-5xl text-center">
               Cảm ơn người dùng {localStorage.getItem("userName")} đã đóng góp
             </h1>
-            <p className="text-lg sm:text-3xl font-semibold text-muted-foreground text-center">
+            <p className="text-md sm:text-3xl font-semibold text-muted-foreground text-center">
               Dữ liệu của bạn sẽ giúp chúng tôi cải thiện khả năng nhận diện của
               trợ lý ảo
             </p>
