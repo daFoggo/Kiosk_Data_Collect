@@ -307,74 +307,78 @@ const Home = () => {
                             </FormItem>
                           )}
                         />
-
-                        <FormField
-                          control={form.control}
-                          name="department_code"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                {form.watch("role") === "officer"
-                                  ? "Phòng ban"
-                                  : "Lớp"}
-                              </FormLabel>
-                              <Select
-                                key={`dept-select-${field.value || "default"}`}
-                                onValueChange={(value) => {
-                                  if (value) {
-                                    field.onChange(value);
-                                  }
-                                }}
-                                value={field.value || undefined}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger className="w-full">
-                                    <SelectValue
-                                      placeholder={
-                                        form.watch("role") === "officer"
-                                          ? "Chọn phòng ban"
-                                          : "Chọn lớp"
-                                      }
-                                    >
-                                      {form.watch("role") === "officer"
-                                        ? departmentData?.find(
-                                            (dept) =>
-                                              dept.ma_phong_ban.toString() ===
-                                              form.watch("department_code")
-                                          )?.ten_phong_ban || "Chọn phòng ban"
-                                        : classData?.find(
-                                            (cls) =>
-                                              cls.id.toString() ===
-                                              form.watch("department_code")
-                                          )?.ten_lop_hanh_chinh || "Chọn lớp"}
-                                    </SelectValue>
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
+                        {(form.watch("role") === "officer" ||
+                          form.watch("role") === "student") && (
+                          <FormField
+                            control={form.control}
+                            name="department_code"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>
                                   {form.watch("role") === "officer"
-                                    ? departmentData?.map((dept) => (
-                                        <SelectItem
-                                          key={dept.ma_phong_ban}
-                                          value={dept.ma_phong_ban.toString()}
-                                        >
-                                          {dept.ten_phong_ban}
-                                        </SelectItem>
-                                      ))
-                                    : classData?.map((cls) => (
-                                        <SelectItem
-                                          key={cls.id}
-                                          value={cls.id.toString()}
-                                        >
-                                          {cls.ten_lop_hanh_chinh}
-                                        </SelectItem>
-                                      ))}
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                                    ? "Phòng ban"
+                                    : "Lớp"}
+                                </FormLabel>
+                                <Select
+                                  key={`dept-select-${
+                                    field.value || "default"
+                                  }`}
+                                  onValueChange={(value) => {
+                                    if (value) {
+                                      field.onChange(value);
+                                    }
+                                  }}
+                                  value={field.value || undefined}
+                                  defaultValue={field.value}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue
+                                        placeholder={
+                                          form.watch("role") === "officer"
+                                            ? "Chọn phòng ban"
+                                            : "Chọn lớp"
+                                        }
+                                      >
+                                        {form.watch("role") === "officer"
+                                          ? departmentData?.find(
+                                              (dept) =>
+                                                dept.ma_phong_ban.toString() ===
+                                                form.watch("department_code")
+                                            )?.ten_phong_ban || "Chọn phòng ban"
+                                          : classData?.find(
+                                              (cls) =>
+                                                cls.id.toString() ===
+                                                form.watch("department_code")
+                                            )?.ten_lop_hanh_chinh || "Chọn lớp"}
+                                      </SelectValue>
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {form.watch("role") === "officer"
+                                      ? departmentData?.map((dept) => (
+                                          <SelectItem
+                                            key={dept.ma_phong_ban}
+                                            value={dept.ma_phong_ban.toString()}
+                                          >
+                                            {dept.ten_phong_ban}
+                                          </SelectItem>
+                                        ))
+                                      : classData?.map((cls) => (
+                                          <SelectItem
+                                            key={cls.id}
+                                            value={cls.id.toString()}
+                                          >
+                                            {cls.ten_lop_hanh_chinh}
+                                          </SelectItem>
+                                        ))}
+                                  </SelectContent>
+                                </Select>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
 
                         {(form.watch("role") === "officer" ||
                           form.watch("role") === "student") && (
