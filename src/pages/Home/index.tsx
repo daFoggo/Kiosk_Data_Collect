@@ -33,6 +33,7 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 import { getClassIp, getDepartmentIp, updateIdentifyDataIp } from "@/utils/ip";
 import { formSchema } from "./constant";
@@ -215,7 +216,7 @@ const Home = () => {
                   <MoveRight />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="w-[95%] sm:w-[625px] rounded-lg">
+              <DialogContent className="w-[95%] sm:w-[625px] max-h-[90vh] overflow-y-auto rounded-lg">
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
